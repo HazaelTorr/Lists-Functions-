@@ -1,2 +1,2 @@
 # Lists-Functions-
-Funciones de Listas en C
+Funciones de Listas en lenguaje C
