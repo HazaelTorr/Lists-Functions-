@@ -1,0 +1,206 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct nodo
+{
+    int dato;
+    struct nodo *sig;
+    struct nodo *ant;
+}TNODOD;
+
+void menu();
+int Muestra_Lista(TNODOD *Cab);
+void Pide_Numero(int *numero);
+TNODOD *Crear_Nodo(int info);
+int Insertar_Inicio(TNODOD **Cab, int info);
+int Insertar_Final(TNODOD **Cab, int info);
+int Muestra_Lista(TNODOD *Cab);
+int Elimina_Nodo(TNODOD **Cab, int info);
+
+int main()
+{
+    menu();
+    return 0;
+}
+
+void menu()
+{
+    TNODOD* cabeza = NULL;
+    int num, verifica;
+    printf("\tListas Dobles\n");
+    int op;
+    do
+    {
+        printf("\n\tMenu\n");
+        printf("1.-Muestra Lista\n2.-Inserta Inicio\n3.-Inserta Final\n");
+        printf("4.-Elimina Dato\n5.-Salir\n");
+        printf("Teclee la opcion deseada\n");
+        scanf("%d", &op);
+        system("cls");
+        switch(op)
+        {
+        case 1:
+            verifica=Muestra_Lista(cabeza);
+            if(verifica==0)
+            {
+                printf("\n\tLa Lista esta Vacia\n\n");
+            }
+            else
+            {
+                printf("\n\tAccion realizada con exito\n\n");
+            }
+            break;
+        case 2:
+            Pide_Numero(&num);
+            verifica=Insertar_Inicio(&cabeza, num);
+            if(verifica==0)
+            {
+                printf("\n\tFallo al realizar la accion\n\n");
+            }
+            else
+            {
+                printf("\n\tAccion realizada con exito\n\n");
+            }
+            break;
+        case 3:
+            Pide_Numero(&num);
+            verifica=Insertar_Final(&cabeza, num);
+            if(verifica==0)
+            {
+                printf("\n\tFallo al realizar la accion\n\n");
+            }
+            else
+            {
+                printf("\n\tAccion realizada con exito\n\n");
+            }
+            break;
+        case 4:
+            Pide_Numero(&num);
+            verifica=Elimina_Nodo(&cabeza, num);
+            if(verifica==0)
+            {
+                printf("\n\tLa Lista esta vacia\n\n");
+            }
+            else
+            {
+                printf("\n\tAccion realizada con exito\n\n");
+            }
+            break;
+        }
+    }
+    while(op!=5);
+}
+
+int Muestra_Lista(TNODOD *Cab)
+{
+    printf("\n");
+    TNODOD *aux = Cab;
+    if(Cab)
+    {
+        while(aux)
+        {
+            printf("[%d] ", aux->dato);
+            aux = aux->sig;
+        }
+        return 1;
+    }
+    return 0;
+    printf("\n\n");
+}
+
+void Pide_Numero(int *numero)
+{
+    printf("\nInserte un numero:\t");
+    scanf("%d", numero);
+}
+
+TNODOD *Crear_Nodo(int info)
+{
+    TNODOD* nuevo = NULL;
+    nuevo = (TNODOD *)malloc(sizeof(TNODOD));
+    if( nuevo )
+    {
+        nuevo->dato = info;
+        nuevo->sig = NULL;
+        nuevo->ant = NULL;
+    }
+    return nuevo;
+}
+
+int Insertar_Inicio(TNODOD **Cab, int info)
+{
+    TNODOD *nuevo = NULL;
+    nuevo = Crear_Nodo(info);
+    if(nuevo)
+    {
+        nuevo->sig = *Cab;
+        nuevo->ant = NULL;
+        if( *Cab)
+            (*Cab)->ant = nuevo;
+        *Cab = nuevo;
+        return 1;
+    }
+    return 0;
+}
+
+int Insertar_Final(TNODOD **Cab, int info)
+{
+    TNODOD *nuevo = NULL;
+    TNODOD *aux = *Cab;
+    nuevo = Crear_Nodo(info);
+    if( nuevo)
+    {
+        while(aux->sig != NULL)
+        {
+            aux = aux->sig;
+        }
+        nuevo->ant = aux;
+        aux->sig = nuevo;
+        return 1;
+    }
+    return 0;
+}
+
+int Elimina_Nodo(TNODOD **Cab, int info)
+{
+    TNODOD *actual = *Cab;
+    TNODOD *prim = NULL; //anterior
+    TNODOD *ult = NULL; //siguiente
+    while(actual != NULL)
+    {
+        if(actual->dato == info)
+        {
+            if(actual == *Cab)
+            {
+                *Cab = actual->sig;
+                if( actual->sig != NULL)
+                {
+                    actual->sig->ant = NULL;
+                }
+            }
+            else
+            {
+                if( actual->sig == NULL)
+                {
+                    prim = actual->ant;
+                    actual->ant = NULL;
+                    prim->sig = NULL;
+                }
+                else
+                {
+                    prim = actual->ant;
+                    actual->ant = NULL;
+                    ult = actual->sig;
+                    actual->sig = NULL;
+                    prim->sig = ult;
+                    ult->ant = prim;
+                }
+                free(actual);
+                return 1;
+            }
+        }
+        actual = actual->sig;
+    }
+    return 0;
+}
+
